@@ -10,7 +10,13 @@ from collections import defaultdict
 
 def process_line(line):
     """Processes a line of input and updates metrics."""
-    pattern = r"(\d+\.\d+\.\d+\.\d+) - \[[^\]]*\] \"GET /projects/260 HTTP/1\.1\" (\d+) (\d+)"
+    pattern = (
+        r"(\d+\.\d+\.\d+\.\d+)"            # IP Address
+        r" - \[[^\]]*\]"                    # Date
+        r" \"GET /projects/260 HTTP/1\.1\""  # GET Request
+        r" (\d+)"                           # Status Code
+        r" (\d+)"                           # File Size
+    )
     match = re.match(pattern, line)
 
     if match:
