@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """This script reads stdin line by line and
-computes metrics.
+computes metrics
 """
 
 import re
@@ -9,7 +9,15 @@ from collections import defaultdict
 
 
 def process_line(line):
-    """Processes a line of input and updates metrics."""
+    """Processes a line of input and updates metrics.
+    ARGS:
+        line (str): The line of input to process.
+
+    RETURN:
+        bool: True if the line was processed, False otherwise.
+    """
+    global total_file_size, status_code_counts
+
     pattern = (
         r"(\d+\.\d+\.\d+\.\d+)"            # IP Address
         r" - \[[^\]]*\]"                    # Date
@@ -34,13 +42,12 @@ def process_line(line):
 
 def print_metrics():
     """Prints the current metrics."""
-    print("File size:", total_file_size)
+    print("File size:", total_file_size)  # Accumulated file size
     for status_code in sorted(status_code_counts.keys()):
         if status_code_counts[status_code] > 0:
             print(f"{status_code}: {status_code_counts[status_code]}")
 
 
-# Initialize global metrics
 total_file_size = 0
 status_code_counts = defaultdict(int)
 line_count = 0
@@ -52,4 +59,5 @@ try:
             if line_count % 10 == 0:
                 print_metrics()
 except KeyboardInterrupt:
-    print_metrics()
+    print_metrics()  # Print one last time on interrupt
+    raise
