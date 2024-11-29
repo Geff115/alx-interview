@@ -20,6 +20,7 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
 
+    # Using Breadth-First Search algorithm (BFS)
     queue = deque([(total, 0)])
     visited = set()
 
