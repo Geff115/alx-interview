@@ -4,6 +4,8 @@ Determining the fewest number of coins needed to
 meet a given amount total.
 """
 
+from collections import deque
+
 
 def makeChange(coins, total):
     """
@@ -18,13 +20,19 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
 
-    # Creating a dp table
-    dp = [float('inf')] * (total + 1)
-    # Base case coin
-    dp[0] = 0
+    queue = deque([(total, 0)])
+    visited = set()
 
-    for coin in coins:
-        for amount in range(coin, total + 1):
-            dp[amount] = min(dp[amount], dp[amount - coin] + 1)
+    while queue:
+        current, steps = queue.popleft()
 
-    return dp[total] if dp[total] != float('inf') else -1
+        if current == 0:
+            return steps
+
+        for coin in coins:
+            next_amount = current - coin
+            if next_amount >= 0 and next_amount not in visited:
+                visited.add(next_amount)
+                queue.append((next_amount, steps + 1))
+
+    return -1
