@@ -15,6 +15,12 @@ def isWinner(x, nums):
 
     RETURN: name of the player that won the most rounds
     """
+    if not x or not nums:
+        return None
+
+    if not isinstance(nums, list):
+        return None
+
     # Finding the maximum value of the array
     nums_length = len(nums)
     max_value = nums[0]
