@@ -18,15 +18,8 @@ def isWinner(x, nums):
     if not x or not nums:
         return None
 
-    if not isinstance(nums, list):
-        return None
-
     # Finding the maximum value of the array
-    nums_length = len(nums)
-    max_value = nums[0]
-    for i in range(1, nums_length):
-        if nums[i] > max_value:
-            max_value = nums[i]
+    max_value = max(nums)
 
     # Creating a list of Boolean values
     prime = [True for i in range(max_value + 1)]
