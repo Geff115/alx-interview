@@ -21,23 +21,8 @@ def isWinner(x, nums):
     # Finding the maximum value of the array
     max_value = max(nums)
 
-    # Creating a list of Boolean values
-    prime = [True for i in range(max_value + 1)]
-    # Explicitly initializing prime[0] and prime[1] to false
-    # Since 0 and 1 are not prime numbers
-    prime[0] = prime[1] = False
-    p = 2
-    while (p * p <= max_value):
-        if prime[p]:
-            # Mark multiples of p as False
-            for i in range(p * p, max_value + 1, p):
-                prime[i] = False
-        p += 1
-
-    # Precomputing prime counts
-    prime_count = [0] * (max_value + 1)
-    for i in range(1, max_value + 1):
-        prime_count[i] = prime_count[i - 1] + (1 if prime[i] else 0)
+    # Precomputing prime using a helper function
+    primes, prime_count = compute_primes(max_value)
 
     # Game logic
     # Initializing counters for wins
@@ -51,21 +36,12 @@ def isWinner(x, nums):
             ben_wins += 1
             continue
 
-        primes_left = prime_count[n]
-        turn = 0  # Maria starts firs (turn = 0), Ben is second (turn = 1)
-
-        while primes_left > 0:
-            # Reduce primes_left by 1 (one prime and its multiples are removed)
-            primes_left -= 1
-            turn = 1 - turn  # Alternate turns
-
-        # Determining the winner of the round
-        if turn == 1:
-            # Maria's turn ends the game, Ben wins
-            ben_wins += 1
-        else:
-            # Ben's turn ends the game, Maria wins
+        # Determining the winner for the round using a helper function
+        winner = simulate_round(n, prime_count)
+        if winner == 'Maria':
             maria_wins += 1
+        elif winner == 'Ben':
+            ben_wins += 1
 
     # Determining the overall winner
     if maria_wins > ben_wins:
@@ -74,3 +50,49 @@ def isWinner(x, nums):
         return 'Ben'
     else:
         return None
+
+
+def compute_primes(limit):
+    """
+    Computes prime numbers and their cumulative count up to a given limit.
+
+    Args:
+        limit (int): The upper bound for prime calculation.
+
+    Returns:
+        tuple: A boolean list indicating primes and a
+        list of cumulative prime counts.
+    """
+    prime = [True for _ in range(limit + 1)]
+    prime[0] = prime[1] = False  # 0 and 1 are not prime
+    for p in range(2, int(limit ** 0.5) + 1):
+        if prime[p]:
+            for i in range(p * p, limit + 1, p):
+                prime[i] = False
+
+    prime_count = [0] * (limit + 1)
+    for i in range(1, limit + 1):
+        prime_count[i] = prime_count[i - 1] + (1 if prime[i] else 0)
+
+    return prime, prime_count
+
+
+def simulate_round(n, prime_count):
+    """
+    Simulates a single round of the prime game.
+
+    Args:
+        n (int): The upper bound of the current round.
+        prime_count (list): Precomputed cumulative prime counts.
+
+    Returns:
+        str: The winner of the round ("Maria" or "Ben").
+    """
+    primes_left = prime_count[n]
+    turn = 0  # 0 for Maria, 1 for Ben
+
+    while primes_left > 0:
+        primes_left -= 1
+        turn = 1 - turn  # Alternate turns
+
+    return "Ben" if turn == 0 else "Maria"
